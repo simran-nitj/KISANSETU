@@ -1,9 +1,8 @@
-import Hero from "./components/Hero";
+import KisanSetuApp from "./components/KisanSetuApp";
 
 function App() {
 
-  return <Hero />;
+  return <KisanSetuApp />;
 
 }
-
 export default App;
