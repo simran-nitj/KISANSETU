@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  database:
+    image: mongo:6.0
+    container_name: kisansetu_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - kisansetu_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kisansetu_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://database:27017/kisansetu
+      - JWT_SECRET=production_random_secret_string_123!
+      - JWT_REFRESH_SECRET=production_random_refresh_secret_string_123!
+      - CLIENT_URL=http://localhost:3000
+      - NODE_ENV=production
+    depends_on:
+      - database
+    networks:
+      - kisansetu_network
+    volumes:
+      - uploads_volume:/usr/src/app/uploads
+
+networks:
+  kisansetu_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+  uploads_volume:
+    driver: local

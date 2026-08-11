@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   ArrowRight,
   BadgeIndianRupee,
@@ -22,10 +24,12 @@ import {
   Tractor,
   TrendingUp,
   Wallet,
-  Wheat
+  Wheat,
+  X
 } from "lucide-react";
 import { motion } from "framer-motion";
 import mascot from "../assets/mascot.png";
+import heroImage from "../assets/hero.png";
 
 const equipment = [
   {
@@ -83,6 +87,8 @@ const modules = [
 const schemes = ["PM Kisan", "Subsidy Finder", "Crop Insurance", "Agri Loans"];
 
 function Nav() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <nav className="sticky top-0 z-50 border-b border-emerald-900/10 bg-[#f8fbf4]/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
@@ -104,17 +110,41 @@ function Nav() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="hidden rounded-md border border-emerald-700 px-4 py-2 text-sm font-bold text-emerald-800 sm:block">
+          <Link
+            to="/login"
+            className="hidden rounded-md border border-emerald-700 px-4 py-2 text-sm font-bold text-emerald-800 sm:block"
+          >
             Login
-          </button>
-          <button className="rounded-md bg-emerald-700 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-900/10">
+          </Link>
+          <Link
+            to="/register"
+            className="rounded-md bg-emerald-700 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-900/10"
+          >
             List Equipment
-          </button>
-          <button className="rounded-md border border-stone-300 p-2 lg:hidden" aria-label="Open menu">
-            <Menu size={20} />
+          </Link>
+          <button
+            className="rounded-md border border-stone-300 p-2 lg:hidden"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
+
+      {menuOpen && (
+        <div className="border-t border-emerald-900/10 bg-white px-5 py-4 lg:hidden">
+          <div className="flex flex-col gap-3 text-sm font-bold text-stone-600">
+            <a href="#marketplace" onClick={() => setMenuOpen(false)}>Marketplace</a>
+            <a href="#dashboards" onClick={() => setMenuOpen(false)}>Dashboards</a>
+            <a href="#schemes" onClick={() => setMenuOpen(false)}>Schemes</a>
+            <a href="#support" onClick={() => setMenuOpen(false)}>Support</a>
+            <Link to="/login" className="font-black text-emerald-700" onClick={() => setMenuOpen(false)}>
+              Login
+            </Link>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
@@ -177,7 +207,7 @@ function EquipmentCard({ item }) {
 
 function SectionTitle({ eyebrow, title, copy }) {
   return (
-    <div className="mx-auto max-w-3xl text-center">
+    <div className="mx-auto max-w-3xl text-center text-stone-900">
       <p className="text-sm font-black uppercase text-emerald-700">{eyebrow}</p>
       <h2 className="mt-2 text-3xl font-black text-emerald-950 md:text-5xl">{title}</h2>
       <p className="mt-4 text-base font-medium text-stone-600">{copy}</p>
@@ -204,8 +234,7 @@ export default function KisanSetuApp() {
             Rent verified machinery from nearby farmers.
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-medium text-stone-600">
-            Kisan Setu connects farmer owners and customers with secure bookings, KYC, payments, chat,
-            recommendations, schemes and field-ready support workflows.
+            Kisan Setu connects farmer owners and customers with secure bookings, chat and field-ready support workflows.
           </p>
           <SearchPanel />
           <div className="mt-6 flex flex-wrap gap-3">
@@ -223,7 +252,12 @@ export default function KisanSetuApp() {
           animate={{ opacity: 1, scale: 1 }}
           className="relative min-h-[520px] overflow-hidden rounded-lg bg-emerald-900 p-6 text-white shadow-2xl shadow-emerald-950/20"
         >
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(20,83,45,0.94),rgba(21,128,61,0.86)),url('/src/assets/hero.png')] bg-cover bg-center" />
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `linear-gradient(135deg, rgba(20,83,45,0.94), rgba(21,128,61,0.86)), url(${heroImage})`
+            }}
+          />
           <div className="relative z-10 flex h-full min-h-[470px] flex-col justify-between">
             <div className="flex items-center justify-between">
               <span className="rounded-md bg-white/15 px-3 py-2 text-sm font-black backdrop-blur">Live operations</span>
@@ -274,7 +308,7 @@ export default function KisanSetuApp() {
           <SectionTitle
             eyebrow="Booking Engine"
             title="Built for the whole rental lifecycle"
-            copy="Requests, approvals, rescheduling, invoices, refunds, deposits and settlement records are part of the operational model."
+            copy="Requests, approvals, rescheduling and settlement records are part of the operational model."
           />
           <div className="mt-12 grid gap-4 md:grid-cols-4">
             {workflows.map(([title, copy], index) => (
@@ -292,7 +326,7 @@ export default function KisanSetuApp() {
         <SectionTitle
           eyebrow="Modules"
           title="Dashboards for every role"
-          copy="Owner, customer, admin, moderator and call-center flows are represented with RBAC-ready product modules."
+          copy="Owner and customer flows are represented with role-based product modules."
         />
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {modules.map(([title, Icon, copy]) => (
